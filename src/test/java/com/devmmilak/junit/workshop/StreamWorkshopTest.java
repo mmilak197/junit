@@ -20,7 +20,7 @@ class StreamWorkshopTest {
         var expected = 3.0;
         var actual = sut.average(numbers);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
@@ -29,7 +29,7 @@ class StreamWorkshopTest {
         var expected = Arrays.asList("Q", "W", "E", "R", "T", "Y");
         var actual = sut.upperCase(text);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
@@ -38,7 +38,16 @@ class StreamWorkshopTest {
         var expected = Arrays.asList("Q", "W", "E", "R", "T", "Y");
         var actual = sut.upperCaseSecond(text);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(expected).isEqualTo(actual);
+    }
+
+    @Test
+    public void shouldReturnListStringStartLetter_A() {
+        var text = Arrays.asList("atropology", "box", "a", "attach", "alex", "aaa");
+        var expected = Arrays.asList("atropology", "attach", "alex", "aaa");
+        var actual = sut.search(text);
+
+        assertThat(expected).isEqualTo(actual);
     }
 
 }

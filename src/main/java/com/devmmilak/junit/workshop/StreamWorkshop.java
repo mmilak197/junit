@@ -24,4 +24,11 @@ public class StreamWorkshop {
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
     }
+
+    public List<String> search(List<String> text) {
+        return text.stream()
+                .filter(it -> it.startsWith("a"))
+                .filter(it -> it.length() >= 3)
+                .collect(Collectors.toList());
+    }
 }
