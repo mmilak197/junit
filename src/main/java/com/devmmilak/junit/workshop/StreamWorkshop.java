@@ -31,4 +31,10 @@ public class StreamWorkshop {
                 .filter(it -> it.length() >= 3)
                 .collect(Collectors.toList());
     }
+
+    public String getString(List<Integer> numbers) {
+        return numbers.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+    }
 }

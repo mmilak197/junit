@@ -50,4 +50,13 @@ class StreamWorkshopTest {
         assertThat(expected).isEqualTo(actual);
     }
 
+    @Test
+    public void shouldReturnCommaSeparetedString() {
+        var numbers = Arrays.asList(1, 2, 3);
+        var expected = new String("1,2,3");
+        var actual = sut.getString(numbers);
+
+        assertThat(expected).isEqualTo(actual);
+    }
+
 }
