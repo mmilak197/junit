@@ -579,6 +579,7 @@ public class WorkShop {
 //                .collect(Collectors.toList()))
 //                .orElseThrow(ArrayIndexOutOfBoundsException::new);
 
+
         return Optional.of(getUserStream()
                             .limit(i)
                             .collect(Collectors.toList()))
@@ -587,6 +588,46 @@ public class WorkShop {
 //        return getUserStream()
 //                .limit(4)
 //                .collect(Collectors.toList());
+    }
+
+    /**
+     * Zwraca użytkownika, który spełnia podany warunek.
+     */
+    public Optional<User> findUser(final Predicate<User> userPredicate) {
+        return holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .flatMap(it -> it.getUsers().stream())
+                .filter(userPredicate)
+                .findFirst();
+    }
+
+    public void listAllUser() {
+        holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .flatMap(it -> it.getUsers().stream())
+                .forEach(System.out::println);
+    }
+
+    /**
+     * Dla podanego użytkownika zwraca informacje o tym ile ma lat w formie:
+     * IMIE NAZWISKO ma lat X. Jeżeli użytkownik nie istnieje to zwraca text: Brak użytkownika.
+     * <p>
+     * Uwaga: W prawdziwym kodzie nie przekazuj Optionali jako parametrów.
+     */
+    public String getAdultantStatus(final Optional<User> user) {
+
+        return user.map(it -> format("%s %s ma lat %d", it.getFirstName(), it.getLastName(), it.getAge()))
+                .orElse("Brak użytkownika");
+
+//        return user.map(it -> it.getFirstName() + " " + it.getLastName() + " ma lat " + it.getAge())
+//                .orElse("Brak użytkownika");
+    }
+
+    public void getAdultantStatusSecond(final Optional<User> user) {
+        user.ifPresentOrElse(
+                it -> System.out.println(it.getFirstName() + " " + it.getLastName() + "ma lat " + it.getAge()),
+                () -> System.out.println("Nie ma takiego usera!")
+        );
     }
 
     private Stream<User> getUserStream() {

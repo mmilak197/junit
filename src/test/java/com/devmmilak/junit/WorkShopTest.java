@@ -6,12 +6,17 @@ import com.devmmilak.junit.domain.Currency;
 import com.devmmilak.junit.domain.User;
 import com.devmmilak.junit.logic.WorkShop;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.function.Executable;
 
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -277,9 +282,10 @@ public class WorkShopTest {
      * 22.
      */
 //    @Test(expected = IllegalArgumentException.class)
-//    public void shouldGetUserFoPassedPredicateThrowException() {
-//        workShop.getUser(u -> u.getFirstName().equals("Camillo"));
-//    }
+    @Test
+    public void shouldGetUserFoPassedPredicateThrowException() {
+        assertThrows(IllegalStateException.class, () -> workShop.getUser(u -> u.getFirstName().equals("Camillo")));
+    }
 
     /**
      * 23.
@@ -388,31 +394,52 @@ public class WorkShopTest {
     /**
      * 31.
      */
-//    @Test
-//    public void shouldFindUser() {
-//        final Optional<User> user = workShop.findUser(u -> u.getLastName().equals("Psikuta"));
-//
-//        assertTrue(user.isPresent());
-//        assertEquals("Zosia", user.get().getFirstName());
-//    }
+    @Test
+    public void shouldFindUser() {
+        final Optional<User> user = workShop.findUser(u -> u.getLastName().equals("Psikuta"));
+
+        assertTrue(user.isPresent());
+        assertEquals("Zosia", user.get().getFirstName());
+    }
 
     /**
      * 32.
      */
-//    @Test
-//    public void shouldGetUserAdultantStatus() {
-//        final Optional<User> user = workShop.findUser(u -> u.getLastName().equals("Psikuta"));
-//        final String adultatStatusOfPsikuta = workShop.getAdultantStatus(user);
-//
-//        assertNotNull(adultatStatusOfPsikuta);
-//        assertEquals("Zosia Psikuta ma lat 67", adultatStatusOfPsikuta);
-//
-//        final Optional<User> userNotExisted = workShop.findUser(u -> u.getLastName().equals("Komorwski"));
-//        final String adultantStatusNotExisted = workShop.getAdultantStatus(userNotExisted);
-//
-//        assertNotNull(adultantStatusNotExisted);
-//        assertEquals("Brak użytkownika", adultantStatusNotExisted);
-//    }
+    @Test
+    public void shouldGetUserAdultantStatus() {
+        final Optional<User> user = workShop.findUser(u -> u.getLastName().equals("Psikuta"));
+        final String adultatStatusOfPsikuta = workShop.getAdultantStatus(user);
+
+        assertNotNull(adultatStatusOfPsikuta);
+        assertEquals("Zosia Psikuta ma lat 67", adultatStatusOfPsikuta);
+
+        final Optional<User> userNotExisted = workShop.findUser(u -> u.getLastName().equals("Komorwski"));
+        final String adultantStatusNotExisted = workShop.getAdultantStatus(userNotExisted);
+
+        assertNotNull(adultantStatusNotExisted);
+        assertEquals("Brak użytkownika", adultantStatusNotExisted);
+    }
+
+    @Test
+    public void shouldGetAdultantStatusSecond() {
+
+        Predicate<User> userPredicateTrue = it -> it.getLastName().equals("Pasibrzuch");
+        var user = workShop.findUser(userPredicateTrue);
+
+        var actual = workShop.getAdultantStatus(user);
+        var expected = "Bartek Pasibrzuch ma lat 18";
+
+        assertThat(actual).isEqualTo(expected);
+
+        Predicate<User> userPredicateFalse = it -> it.getLastName().equals("Nowakowski");
+        user = workShop.findUser(userPredicateFalse);
+
+        actual = workShop.getAdultantStatus(user);
+        expected = "Brak użytkownika";
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
 
     /**
      * 33.
@@ -459,12 +486,14 @@ public class WorkShopTest {
     /**
      * 37.
      */
-//    @Test(timeout = 15) // maksymalnie 25ms jezeli masz wolny komputer.
-//    public void shouldGetFastRandomNUser() {
-//        final List<User> randomUsers = workShop.getRandomUsers(20);
-//
-//        assertEquals(20, randomUsers.size());
-//    }
+    @Test
+    @DisplayName("shouldGetFastRandomNUser")
+    @Timeout(value = 40, unit = TimeUnit.MILLISECONDS) // maksymalnie 25ms jezeli masz wolny komputer.
+    public void shouldGetFastRandomNUser() {
+        final List<User> randomUsers = workShop.getRandomUsers(20);
+
+        assertEquals(20, randomUsers.size());
+    }
 
     /**
      * 38.
@@ -529,7 +558,7 @@ public class WorkShopTest {
      */
     @Test
     public void shouldDivideIntoAdultsAndNonAdults() {
-        Map<Boolean, Long> countAdultsAndNonAdults = workShop.divideIntoAdultsAndNonAdults();
+        var countAdultsAndNonAdults = workShop.divideIntoAdultsAndNonAdults();
 
         assertFalse(countAdultsAndNonAdults.isEmpty());
         assertEquals(1, (long) countAdultsAndNonAdults.get(false));
