@@ -600,8 +600,6 @@ public class WorkShop {
      * Stwórz mapę gdzie kluczem jest typ rachunku a wartością mapa mężczyzn posiadających ten rachunek, gdzie kluczem
      * jest obiekt User a wartością suma pieniędzy na rachunku danego typu przeliczona na złotkówki.
      */
-    //TODO: zamiast Map<Stream<AccountType>, Map<User, BigDecimal>> metoda ma zwracać
-    // Map<AccountType>, Map<User, BigDecimal>>, zweryfikować działania metody
     public Map<Stream<AccountType>, Map<User, BigDecimal>> getMapWithAccountTypeKeyAndSumMoneyForManInPLN() {
 
         return getCompanyStream()
@@ -635,11 +633,41 @@ public class WorkShop {
                 .sum());
     }
 
+    /**
+     * 39. Policz ile pieniędzy w złotówkach jest na kontach osób które nie są ani kobietą ani mężczyzną.
+     */
     public BigDecimal getSumMoneyOnAccountsForPeopleOtherInPLN() {
-        return null;
+//        return BigDecimal.valueOf(holdings.stream()
+//                .flatMap(it -> it.getCompanies().stream())
+//                .flatMap(it -> it.getUsers().stream())
+//                .filter(it -> it.getSex().equals(Sex.OTHER))
+//                .mapToLong(this::calculateAmountsOnAccounts)
+//                .sum()).round(MathContext.DECIMAL32);
+
+        return getUserStream()
+                .filter(it -> it.getSex().equals(Sex.OTHER))
+                .map(this::calculateAmountsOnAccounts)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+        private BigDecimal calculateAmountsOnAccounts(final User user) {
+
+        return user.getAccounts().stream()
+                .map(it -> it.getAmount().multiply(BigDecimal.valueOf(it.getCurrency().rate)))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    }
+
+    /**
+     * 40.
+     * Policz ile osób pełnoletnich posiada rachunek oraz ile osób niepełnoletnich posiada rachunek. Zwróć mapę
+     * przyjmując klucz True dla osób pełnoletnich i klucz False dla osób niepełnoletnich. Osoba pełnoletnia to osoba
+     * która ma więcej lub równo 18 lat
+     */
     public Map<Boolean, Long> divideIntoAdultsAndNonAdults() {
-        return null;
+        return holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .flatMap(it -> it.getUsers().stream())
+                .collect(Collectors.partitioningBy(it -> it.getAge() >= 18, counting()));
     }
 }

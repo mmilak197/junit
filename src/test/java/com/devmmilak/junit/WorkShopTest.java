@@ -493,6 +493,34 @@ public class WorkShopTest {
         assertNotSame(Integer.TYPE, sumMoneyOnAccountsForPeopleOtherInPLN.getClass());
     }
 
+    @Test
+    public void shouldReturn21Value() {
+        var numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+        var result = numbers.stream()
+                .reduce(0, (x, y) -> x + y);
+
+        assertThat(result).isEqualTo(21);
+
+        var resultSecond = numbers.stream()
+                .mapToInt(it -> it)
+                .sum();
+
+        assertThat(resultSecond).isEqualTo(21);
+
+        var numbersBD = Arrays.asList(new BigDecimal(1),
+                                        new BigDecimal(2),
+                                        new BigDecimal(3),
+                                        new BigDecimal(4),
+                                        new BigDecimal(5),
+                                        new BigDecimal(6));
+
+        var resultThird = numbersBD.stream()
+                .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
+
+        assertThat(resultThird).isEqualTo(new BigDecimal(21));
+    }
+
+
     /**
      * 40. Wymyśl treść polecenia i je zaimplementuj.
      * Policz ile osób pełnoletnich posiada rachunek oraz ile osób niepełnoletnich posiada rachunek. Zwróć mapę
