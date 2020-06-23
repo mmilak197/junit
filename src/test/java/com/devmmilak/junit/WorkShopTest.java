@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.function.Executable;
 
 
 import java.math.BigDecimal;
@@ -207,39 +206,39 @@ public class WorkShopTest {
     /**
      * 16.
      */
-//    @Test
-//    public void shouldReturnUserNameForPassedCondition() {
-//        assertEquals("[Adam, Alfred, Amadeusz]",
-//                workShop.getUsersForPredicate(user -> user.getFirstName().startsWith("A")).toString());
-//        assertEquals("[Karol, Zosia]", workShop.getUsersForPredicate(user -> user.getAge() > 50).toString());
-//    }
+    @Test
+    public void shouldReturnUserNameForPassedCondition() {
+        assertEquals("[Adam, Alfred, Amadeusz]",
+                workShop.getUsersForPredicate(user -> user.getFirstName().startsWith("A")).toString());
+        assertEquals("[Karol, Zosia]", workShop.getUsersForPredicate(user -> user.getAge() > 50).toString());
+    }
 
     /**
      * 17.
      */
     @Test
     public void shouldReturnWomanWhichAreOlderThan50() {
-        final List<String> oldWomam = workShop.getOldWoman(50);
+        final List<String> oldWomam = workShop.getOldMan(50);
         assertEquals("[Karol]", oldWomam.toString());
     }
 
     /**
      * 18.
      */
-//    @Test
-//    public void shouldExecuteConsumerForEachCompany() {
-//        final StringBuilder builder = new StringBuilder();
-//        workShop.executeForEachCompany(company ->
-//                builder
-//                        .append(company.getName())
-//                        .append("=")
-//                        .append(company.getUsers().size())
-//                        .append(" ")
-//        );
-//
-//        assertEquals("Nescafe=4 Gerber=3 Nestea=1 Fanta=3 Sprite=2 Lays=2 Pepsi=3 Mirinda=2 ",
-//                builder.toString());
-//    }
+    @Test
+    public void shouldExecuteConsumerForEachCompany() {
+        final StringBuilder builder = new StringBuilder();
+        workShop.executeForEachCompany(company ->
+                builder
+                        .append(company.getName())
+                        .append("=")
+                        .append(company.getUsers().size())
+                        .append(" ")
+        );
+
+        assertEquals("Nescafe=4 Gerber=3 Nestea=1 Fanta=3 Sprite=2 Lays=2 Pepsi=3 Mirinda=2 ",
+                builder.toString());
+    }
 
     /**
      * 19.
@@ -516,7 +515,7 @@ public class WorkShopTest {
     public void shouldGetAllMoneyInTheAccountsOfPeopleOther() {
         BigDecimal sumMoneyOnAccountsForPeopleOtherInPLN = workShop.getSumMoneyOnAccountsForPeopleOtherInPLN();
 
-        assertEquals(new BigDecimal("1667.000"), sumMoneyOnAccountsForPeopleOtherInPLN);
+        assertEquals(new BigDecimal("1667.220"), sumMoneyOnAccountsForPeopleOtherInPLN);
         assertNotEquals(new BigDecimal("1666.000"), sumMoneyOnAccountsForPeopleOtherInPLN);
         assertNotNull(sumMoneyOnAccountsForPeopleOtherInPLN);
         assertNotSame(Integer.TYPE, sumMoneyOnAccountsForPeopleOtherInPLN.getClass());

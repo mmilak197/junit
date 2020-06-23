@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -128,7 +129,10 @@ public class WorkShop {
      * UWAGA: Zadanie z gwiazdką. Nie używamy zmiennych.
      */
     public String getAllCompaniesNamesAsStringUsingStringBuilder() {
-        return null;
+        return holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .map(Company::getName)
+                .collect(Collectors.joining("+"));
     }
 
 
@@ -250,7 +254,7 @@ public class WorkShop {
      * Metoda filtruje użytkowników starszych niż podany jako parametr wiek, wyświetla ich na konsoli, odrzuca mężczyzn
      * i zwraca ich imiona w formie listy.
      */
-    public List<String> getOldWoman(int age) {
+    public List<String> getOldMan(int age) {
         return holdings.stream()
                 .flatMap(it -> it.getCompanies().stream())
                 .flatMap(it -> it.getUsers().stream())
@@ -335,6 +339,27 @@ public class WorkShop {
                 .flatMap(it -> it.getUsers().stream())
                 .flatMap(it -> it.getAccounts().stream())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Dla każdej firmy uruchamia przekazaną metodę.
+     */
+    public void executeForEachCompany(final Consumer<Company> consumer) {
+        holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .forEach(consumer);
+    }
+
+    /**
+     * Zwraca imiona użytkowników w formie zbioru, którzy spełniają podany warunek.
+     */
+    public Set<String> getUsersForPredicate(final Predicate<User> userPredicate) {
+        return holdings.stream()
+                .flatMap(it -> it.getCompanies().stream())
+                .flatMap(it -> it.getUsers().stream())
+                .filter(userPredicate)
+                .map(it -> it.getFirstName())
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -688,7 +713,8 @@ public class WorkShop {
         return getUserStream()
                 .filter(it -> it.getSex().equals(Sex.OTHER))
                 .map(this::calculateAmountsOnAccounts)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .round(MathContext.DECIMAL32);
     }
 
         private BigDecimal calculateAmountsOnAccounts(final User user) {
